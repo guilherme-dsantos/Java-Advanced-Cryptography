@@ -1,4 +1,3 @@
-package aulas;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -18,8 +17,8 @@ public class Paillier {
 	
 	//public and private keys:
 	
-	private static final BigInteger 𝝀 = 			// the private key sk = (p-1).(q-1)
-	private static final BigInteger n = 		// the public key pk = p.q
+	private static final BigInteger sk = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));			// the private key sk = (p-1).(q-1)
+	private static final BigInteger pk = p.multiply(q);		// the public key pk = p.q
 	
 	
 	public static void main (String[] args) {
@@ -71,17 +70,22 @@ public class Paillier {
 	 * @return ciphertext c = ( (1+n)^m mod n^2 . r^n mod n^2 ) mod n^2
 	 */
 	private static BigInteger encrypt(BigInteger m) {
+		BigInteger r = new BigInteger(q.bitLength() - 1, rndGenerator);
+		BigInteger aux = (BigInteger.ONE.add(pk)).modPow(m, pk.pow(2));
+		BigInteger aux2 = r.modPow(pk, pk.pow(2));
+		return (aux.multiply(aux2)).mod(pk.pow(2));
 		
 	}
 	
 	/**
-	 * Decrypts ciphertext c with the private key 𝝀.
+	 * Decrypts ciphertext c with the private key sk.
 	 * 
 	 * @param c the ciphertext
-	 * @return plaintext m = ( ( (c^𝝀 mod n^2)-1) / (n) . (𝝀^-1 mod n) ) mod n
+	 * @return plaintext m = ( ( (c^sk mod n^2)-1) / (n) . (sk^-1 mod n) ) mod n
 	 */
 	private static BigInteger decrypt(BigInteger c) {
-
+		BigInteger aux= (c.modPow(sk, pk.pow(2)).subtract(BigInteger.ONE)).divide(pk);
+		return (aux.multiply(sk.modPow(BigInteger.valueOf(-1), pk))).mod(pk);
 	}
 	
 	/**
@@ -93,6 +97,7 @@ public class Paillier {
 	 * @return ciphertext c = ( cipher1 . cipher2 ) mod n^2
 	 */
 	private static BigInteger eval(BigInteger cipher1, BigInteger cipher2) {
+		return (cipher1.multiply(cipher2)).mod(pk.pow(2));
 
 	}
 	
