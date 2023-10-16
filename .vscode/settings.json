@@ -1,10 +1,12 @@
 {
     "java.project.sourcePaths": [
-        "lib",
-        ".",
-        ".vscode"
+        "SecretSharing",
+        "ModernCiphers/lib",
+        "ModernCiphers",
+        "HomomorphicEncryption"
     ],
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/bcprov-jdk18on-176.jar",
+        "ModernCiphers/lib/bcprov-jdk18on-176.jar"
     ]
 }
